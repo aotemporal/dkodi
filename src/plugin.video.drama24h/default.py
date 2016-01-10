@@ -58,6 +58,7 @@ def convertascii(strInput, param2, param3):
 	
 def GetContent(url):
     print 'TRACE - in GetContent'
+    print 'DEBUG - getting url - ' + url
     try:
        net = Net()
        second_response = net.http_GET(url)
@@ -238,8 +239,9 @@ def GetMenu():
         print 'DEBUG - starting BeautifulSoup'
         soup  = BeautifulSoup(newlink)
         print 'DEBUG - done BeautifulSoup'
-        print 'DEBUG - doing findAll'
+        print 'DEBUG - doing BeautifulSoup findAll'
         vidcontent=soup.findAll('ul', {"id" : "nav"})
+        print 'DEBUG - done BeautifulSoup findAll'
         print 'DEBUG - starting vidcontent loop'
         for item in vidcontent[0].findAll('li'):
 			print 'DEBUG - looping'
