@@ -17,10 +17,15 @@ from t0mm0.common.addon import Addon
 import commands
 import jsunpack
 
+print 'DEBUG - Starting drama24h addon'
+print 'DEBUG - Loading settings'
 __settings__ = xbmcaddon.Addon(id='plugin.video.drama24h')
+print 'DEBUG - Done Loading settings'
 home = __settings__.getAddonInfo('path')
 #addon = Addon('plugin.video.1channel', sys.argv)
+print 'DEBUG - translating path'
 datapath = xbmc.translatePath(os.path.join(home, 'resources', ''))
+print 'DEBUG - done translating path'
 #langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://hkdrama4u.com"
 AZ_DIRECTORIES = ['0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
@@ -2246,7 +2251,7 @@ except:
 		
 sysarg=str(sys.argv[1]) 
 
-print "currentmode" + str(mode)
+print "currentmode - " + str(mode)
 if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==3:
@@ -2294,3 +2299,5 @@ elif mode==32:
 elif mode==33:
 		SensenLatestIndex(url)
 xbmcplugin.endOfDirectory(int(sysarg))
+
+print 'DEBUG - Done running drama24h addon'
