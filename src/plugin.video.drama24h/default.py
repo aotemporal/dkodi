@@ -236,8 +236,27 @@ def GetMenu():
         except: pass
         print 'DEBUG - split lines and join'
         newlink = ''.join(link.splitlines()).replace('\t','')
+        menulinks=re.compile('<div id="menu">(.+)').findall(parsedlink)
+        parsedlink=menulinks[0]
+        #parsedlink=newlink
+        divsubs=1;
+        startindex=0;
+        while(divsubs > 0):
+            opendivpos=parsedlink.find("<div", startindex)
+            closedivpos=parsedlink.find("</div>", startindex)
+            if (opendivpos != -1 and opendivpos < closedivpos):
+                divsubs+=1
+                startindex=opendivpos+4
+            elif (closedivpos != -1):
+                divsubs-=1
+                startindex=closedivpos+5
+            else:
+                divsubs = -1
+
+        #assuming divs match up for now
+        parsedlink=parsedlink[:startindex]
         print 'DEBUG - starting BeautifulSoup'
-        soup  = BeautifulSoup(newlink)
+        soup  = BeautifulSoup(parsedlink)
         print 'DEBUG - done BeautifulSoup'
         print 'DEBUG - doing BeautifulSoup findAll'
         vidcontent=soup.findAll('ul', {"id" : "nav"})
