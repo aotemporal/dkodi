@@ -6,7 +6,6 @@ from t0mm0.common.net import Net
 import xml.dom.minidom
 import xbmcaddon,xbmcplugin,xbmcgui
 import json
-import urlresolver
 import time,datetime
 from BeautifulSoup import BeautifulSoup
 from BeautifulSoup import BeautifulStoneSoup
@@ -17,15 +16,11 @@ from t0mm0.common.addon import Addon
 import commands
 import jsunpack
 
-print 'DEBUG - Starting drama24h addon'
-print 'DEBUG - Loading settings'
+print 'DEBUG - starting drama24h'
 __settings__ = xbmcaddon.Addon(id='plugin.video.drama24h')
-print 'DEBUG - Done Loading settings'
 home = __settings__.getAddonInfo('path')
 #addon = Addon('plugin.video.1channel', sys.argv)
-print 'DEBUG - translating path'
 datapath = xbmc.translatePath(os.path.join(home, 'resources', ''))
-print 'DEBUG - done translating path'
 #langfile = xbmc.translatePath(os.path.join(home, 'resources', 'lang.txt'))
 strdomain ="http://hkdrama4u.com"
 AZ_DIRECTORIES = ['0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y', 'Z']
@@ -62,6 +57,7 @@ def convertascii(strInput, param2, param3):
 
 	
 def GetContent(url):
+    print 'TRACE - in GetContent'
     try:
        net = Net()
        second_response = net.http_GET(url)
@@ -69,13 +65,17 @@ def GetContent(url):
        try:
             rcontent =rcontent.encode("UTF-8")
        except: pass
+       print 'DEBUG - doing findall'
        encstring =re.compile('eval\(unescape\((.+?)\)\);').findall(rcontent)
+       print 'DEBUG - done findall'
        if(len(encstring)>1):
 			rcontent=eval("convertascii("+encstring[1]+")").replace("\/","/") 
+       print 'TRACE - out GetContent'
        return rcontent
     except:	
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
+    print 'TRACE - out GetContent'
 
 try:
 
@@ -213,27 +213,41 @@ def DeleteFav(name,url):
     db.close()
 		
 def HOME():
+        print 'TRACE - in HOME'
+        print 'DEBUG - adding search dramas'
         addDir('Search Dramas',strdomain,10,'')
+        print 'DEBUG - adding search movies'
         addDir('Search Movies',strdomain,9,'')
+        print 'DEBUG - adding favorites'
         addDir('Your Favorites',strdomain,24,'')
+        print 'DEBUG - adding movies'
         addDir('Movies','http://movies.hkdrama24h.se/',19,'')
         GetMenu()
+        print 'TRACE - out HOME'
 		
 
 	
 def GetMenu():
+        print 'TRACE - in GetMenu'
         link = GetContent(strdomain)
         try:
             link =link.encode("UTF-8")
         except: pass
+        print 'DEBUG - split lines and join'
         newlink = ''.join(link.splitlines()).replace('\t','')
+        print 'DEBUG - starting BeautifulSoup'
         soup  = BeautifulSoup(newlink)
+        print 'DEBUG - done BeautifulSoup'
+        print 'DEBUG - doing findAll'
         vidcontent=soup.findAll('ul', {"id" : "nav"})
+        print 'DEBUG - starting vidcontent loop'
         for item in vidcontent[0].findAll('li'):
+			print 'DEBUG - looping'
 			link = item.a['href'].encode('utf-8', 'ignore')
 			vname=str(item.a.contents[0]).strip()
 			if(vname.strip() != "HOME" and vname.strip() != "GAME" and vname.strip() != "Movies"):
 				addDir(vname,link,18,"")
+        print 'TRACE - out GetMenu'
 				
 def GetMovieMenu():
         link = GetContent("http://movies.hkdrama24h.se/")
@@ -1198,6 +1212,7 @@ def ParseVideoLink(url,name,movieinfo):
                 if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
                         redir = redirlink.split("/file/")
                         redirlink = redir[0] +"/file/" + redir[1].upper()
+                import urlresolver
                 sources = []
                 label=name
                 hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
@@ -1211,6 +1226,7 @@ def ParseVideoLink(url,name,movieinfo):
                 if(redirlink.find("putlocker.com") > -1 or redirlink.find("sockshare.com") > -1):
                         redir = redirlink.split("/file/")
                         redirlink = redir[0] +"/file/" + redir[1].upper()
+                import urlresolver
                 sources = []
                 label=name
                 hosted_media = urlresolver.HostedMediaFile(url=redirlink, title=label)
@@ -2183,6 +2199,7 @@ def addNext(formvar,url,mode,iconimage):
         return ok
 		
 def addDir(name,url,mode,iconimage,plot=""):
+        print 'TRACE - in addDir - ' + name
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -2251,7 +2268,7 @@ except:
 		
 sysarg=str(sys.argv[1]) 
 
-print "currentmode - " + str(mode)
+print "current mode - " + str(mode)
 if mode==None or url==None or len(url)<1:
         HOME()
 elif mode==3:
@@ -2299,5 +2316,4 @@ elif mode==32:
 elif mode==33:
 		SensenLatestIndex(url)
 xbmcplugin.endOfDirectory(int(sysarg))
-
-print 'DEBUG - Done running drama24h addon'
+print 'DEBUG - done drama24h'
