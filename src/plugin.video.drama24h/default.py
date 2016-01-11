@@ -1,3 +1,4 @@
+print 'DEBUG - start import'
 import httplib
 import urlparse,urllib,urllib2,re,sys
 import cookielib,os,string,cookielib,StringIO,gzip
@@ -16,6 +17,7 @@ from t0mm0.common.addon import Addon
 import commands
 import jsunpack
 
+print 'DEBUG - end import'
 print 'DEBUG - starting drama24h'
 __settings__ = xbmcaddon.Addon(id='plugin.video.drama24h')
 home = __settings__.getAddonInfo('path')
@@ -57,8 +59,6 @@ def convertascii(strInput, param2, param3):
 
 	
 def GetContent(url):
-    print 'TRACE - in GetContent'
-    print 'DEBUG - getting url - ' + url
     try:
        net = Net()
        second_response = net.http_GET(url)
@@ -66,17 +66,13 @@ def GetContent(url):
        try:
             rcontent =rcontent.encode("UTF-8")
        except: pass
-       print 'DEBUG - doing findall'
        encstring =re.compile('eval\(unescape\((.+?)\)\);').findall(rcontent)
-       print 'DEBUG - done findall'
        if(len(encstring)>1):
 			rcontent=eval("convertascii("+encstring[1]+")").replace("\/","/") 
-       print 'TRACE - out GetContent'
        return rcontent
     except:	
        d = xbmcgui.Dialog()
        d.ok(url,"Can't Connect to site",'Try again in a moment')
-    print 'TRACE - out GetContent'
 
 try:
 
@@ -214,17 +210,11 @@ def DeleteFav(name,url):
     db.close()
 		
 def HOME():
-        print 'TRACE - in HOME'
-        print 'DEBUG - adding search dramas'
         addDir('Search Dramas',strdomain,10,'')
-        print 'DEBUG - adding search movies'
         addDir('Search Movies',strdomain,9,'')
-        print 'DEBUG - adding favorites'
         addDir('Your Favorites',strdomain,24,'')
-        print 'DEBUG - adding movies'
         addDir('Movies','http://movies.hkdrama24h.se/',19,'')
         GetMenu()
-        print 'TRACE - out HOME'
 		
 
 	
@@ -234,11 +224,9 @@ def GetMenu():
         try:
             link =link.encode("UTF-8")
         except: pass
-        print 'DEBUG - split lines and join'
         newlink = ''.join(link.splitlines()).replace('\t','')
-        menulinks=re.compile('<div id="menu">(.+)').findall(parsedlink)
+        menulinks=re.compile('<div id="menu">(.+)').findall(newlink)
         parsedlink=menulinks[0]
-        #parsedlink=newlink
         divsubs=1;
         startindex=0;
         while(divsubs > 0):
@@ -254,16 +242,15 @@ def GetMenu():
                 divsubs = -1
 
         #assuming divs match up for now
-        parsedlink=parsedlink[:startindex]
+        parsedlink=parsedlink[:startindex+1]
+        parsedlink='<div id="menu">' + parsedlink
         print 'DEBUG - starting BeautifulSoup'
         soup  = BeautifulSoup(parsedlink)
         print 'DEBUG - done BeautifulSoup'
         print 'DEBUG - doing BeautifulSoup findAll'
         vidcontent=soup.findAll('ul', {"id" : "nav"})
         print 'DEBUG - done BeautifulSoup findAll'
-        print 'DEBUG - starting vidcontent loop'
         for item in vidcontent[0].findAll('li'):
-			print 'DEBUG - looping'
 			link = item.a['href'].encode('utf-8', 'ignore')
 			vname=str(item.a.contents[0]).strip()
 			if(vname.strip() != "HOME" and vname.strip() != "GAME" and vname.strip() != "Movies"):
