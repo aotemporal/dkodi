@@ -273,9 +273,9 @@ def GetMenu():
         soup  = BeautifulSoup(parsedlink)
         print 'DEBUG - done BeautifulSoup'
         print 'DEBUG - doing BeautifulSoup findAll'
-        vidcontent=soup.findAll('ul', {"id" : "nav"})
+        vidcontent=soup.find('ul', {"id" : "nav"})
         print 'DEBUG - done BeautifulSoup findAll'
-        for item in vidcontent[0].findAll('li'):
+        for item in vidcontent.findAll('li'):
 			link = item.a['href'].encode('utf-8', 'ignore')
 			vname=str(item.a.contents[0]).strip()
 			if(vname.strip() != "HOME" and vname.strip() != "GAME" and vname.strip() != "Movies"):
@@ -1277,12 +1277,12 @@ def ListShows(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        parsedlink=ScrubLinkContent(newlink, '<div id="main">', '<div>')
+        parsedlink=ScrubLinkContent(newlink, '<div id="content">', '<div>')
         print 'DEBUG - starting BeautifulSoup'
         soup = BeautifulSoup(parsedlink)
         print 'DEBUG - done BeautifulSoup'
-        vidcontent=soup.findAll('div', {"id" : "main"})
-        for item in vidcontent[0].findAll('li'):
+        vidcontent=soup.find('div', {"id" : "content"})
+        for item in vidcontent.findAll('li'):
 
 			if(item.has_key("class")==False or item["class"]!="cleaner"):
 				if(item.div.a!=None):
@@ -1293,9 +1293,9 @@ def ListShows(url):
 					if(len(item.p.contents)>0):
 						vplot=item.contents[0].encode('utf-8', 'ignore')
 					addDirContext(vname,vlink,8,vimg,vplot,"tvshow")
-        navcontent=soup.findAll('div', {"class" : "navigation"})
+        navcontent=soup.find('div', {"class" : "navigation"})
         if(len(navcontent)>0):
-			for item in navcontent[0].findAll('a'):
+			for item in navcontent.findAll('a'):
 				vlink=item["href"]
 				try:
 					vname=item.contents[0].encode('utf-8', 'ignore')
