@@ -1277,7 +1277,10 @@ def ListShows(url):
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        soup = BeautifulSoup(newlink)
+        parsedlink=ScrubLinkContent(newlink, '<div id="main">', '<div>')
+        print 'DEBUG - starting BeautifulSoup'
+        soup = BeautifulSoup(parsedlink)
+        print 'DEBUG - done BeautifulSoup'
         vidcontent=soup.findAll('div', {"id" : "main"})
         for item in vidcontent[0].findAll('li'):
 
