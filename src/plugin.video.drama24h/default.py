@@ -1,20 +1,63 @@
 print 'DEBUG - start import'
+print 'DEBUG - start httplib import'
 import httplib
-import urlparse,urllib,urllib2,re,sys
-import cookielib,os,string,cookielib,StringIO,gzip
-import os,time,base64,logging
+print 'DEBUG - start urlparse import'
+import urlparse
+print 'DEBUG - start urllib import'
+import urllib
+print 'DEBUG - start urllib2 import'
+import urllib2
+print 'DEBUG - start re import'
+import re
+print 'DEBUG - start sys import'
+import sys
+print 'DEBUG - start cookielib import'
+import cookielib
+print 'DEBUG - start os import'
+import os
+print 'DEBUG - start string import'
+import string
+print 'DEBUG - start cookielib import'
+import cookielib
+print 'DEBUG - start StringIO import'
+import StringIO
+print 'DEBUG - start gzip import'
+import gzip
+print 'DEBUG - start time import'
+import time
+print 'DEBUG - start base64 import'
+import base64
+print 'DEBUG - start logging import'
+import logging
+print 'DEBUG - start t0mm0.common.net - Net import'
 from t0mm0.common.net import Net
+print 'DEBUG - start xml.dom.minidom import'
 import xml.dom.minidom
-import xbmcaddon,xbmcplugin,xbmcgui
+print 'DEBUG - start xbmcaddon import'
+import xbmcaddon
+print 'DEBUG - start xbmcplugin import'
+import xbmcplugin
+print 'DEBUG - start xbmcgui import'
+import xbmcgui
+print 'DEBUG - start json import'
 import json
-import time,datetime
+print 'DEBUG - start datetime import'
+import datetime
+print 'DEBUG - start BeautifulSoup import'
 from BeautifulSoup import BeautifulSoup
+print 'DEBUG - start BeautifulStoneSoup import'
 from BeautifulSoup import BeautifulStoneSoup
+print 'DEBUG - start SoupStrainer import'
 from BeautifulSoup import SoupStrainer
+print 'DEBUG - start core import'
 import core
+print 'DEBUG - start xml.dom.minidom - Document import'
 from xml.dom.minidom import Document
+print 'DEBUG - start t0mm0.common.addon - Addon import'
 from t0mm0.common.addon import Addon
+print 'DEBUG - start commands import'
 import commands
+print 'DEBUG - start jsunpack import'
 import jsunpack
 
 print 'DEBUG - end import'
