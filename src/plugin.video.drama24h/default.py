@@ -268,25 +268,7 @@ def GetMenu():
             link =link.encode("UTF-8")
         except: pass
         newlink = ''.join(link.splitlines()).replace('\t','')
-        menulinks=re.compile('<div id="menu">(.+)').findall(newlink)
-        parsedlink=menulinks[0]
-        divsubs=1;
-        startindex=0;
-        while(divsubs > 0):
-            opendivpos=parsedlink.find("<div", startindex)
-            closedivpos=parsedlink.find("</div>", startindex)
-            if (opendivpos != -1 and opendivpos < closedivpos):
-                divsubs+=1
-                startindex=opendivpos+4
-            elif (closedivpos != -1):
-                divsubs-=1
-                startindex=closedivpos+5
-            else:
-                divsubs = -1
-
-        #assuming divs match up for now
-        parsedlink=parsedlink[:startindex+1]
-        parsedlink='<div id="menu">' + parsedlink
+        parsedlink=ScrubLinkContent(newlink, '<div id="menu">', '<div>')
         print 'DEBUG - starting BeautifulSoup'
         soup  = BeautifulSoup(parsedlink)
         print 'DEBUG - done BeautifulSoup'
@@ -2277,6 +2259,32 @@ def get_params():
         return param    
 
 
+
+
+#parses html content given a specific starttag and parses until a matching closing tag
+def ScrubLinkContent(content, starttag, tag):
+	scrubbedcontentraw=re.compile(starttag+'(.+)').findall(content)
+	scrubbedcontent=scrubbedcontentraw[0]
+	subtags=1
+	startindex=0
+	opentag=tag[:len(tag)-1]
+	closetag='<'+ '/' + tag[1:]
+	while(subtags > 0):
+		opentagpos=scrubbedcontent.find(opentag, startindex)
+		closetagpos=scrubbedcontent.find(closetag, startindex)
+		if (opentagpos != -1 and opentagpos < closetagpos):
+			subtags+=1
+			startindex=opentagpos+len(opentag)
+		elif (closetagpos != -1):
+			subtags-=1
+			startindex=closetagpos+len(closetag)
+		else:
+			subtags = -1
+
+	#assuming tags match up for now
+	scrubbedcontent=scrubbedcontent[:startindex]
+	scrubbedcontent=starttag + scrubbedcontent
+	return scrubbedcontent
 
 params=get_params()
 url=None
